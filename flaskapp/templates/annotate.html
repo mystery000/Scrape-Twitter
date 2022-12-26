@@ -8,7 +8,10 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
         <div class="container">
 		<div class="table-responsive">
-            {{ output }}
+            <!-- {{ output }} -->
+            {% for tweet_text in tweets['text'] %}
+                <p style="border-bottom: 1px solid green; "> {{ tweet_text }}</p>
+            {% endfor %}           
         </div>
     </div>
 	</body>

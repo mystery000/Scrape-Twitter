@@ -197,19 +197,3 @@ class ScrapeTwitter:
 
     df.to_csv('public_tweets.csv')
     return jsonify({'success': 'Twitter API calling is done successfully!'}), 200   
-
-
-
-
-
-
-
-
-
-
-
-
-     
-      
-
-

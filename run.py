@@ -39,16 +39,23 @@ def collect_page():
 def search_page():
   return render_template('search.html')
 
+# @app.route('/annotate')
+# def annotate_page():
+#   with open('test.html', 'r') as f:
+#     html_string = f.read()
+#   with open('annotation-profile.json', 'r') as f:
+#     rules = json.load(f) 
+#   output = get_annotated_text(html_string, ParserConfig(annotation_rules=rules))
+#   # HtmlExtractor.__call__(HtmlExtractor, output)
+#   # HtmlExtractor._get_label_colors('heading', 'red')
+#   return render_template('annotate.html', output=[output])
+
+
 @app.route('/annotate')
 def annotate_page():
-  with open('test.html', 'r') as f:
-    html_string = f.read()
-  with open('annotation-profile.json', 'r') as f:
-    rules = json.load(f) 
-  output = get_annotated_text(html_string, ParserConfig(annotation_rules=rules))
-  # HtmlExtractor.__call__(HtmlExtractor, output)
-  # HtmlExtractor._get_label_colors('heading', 'red')
-  return render_template('annotate.html', output=[output])
+  data = pd.read_csv('scraped_tweets.csv')
+  tweets:list = data.to_dict('list')
+  return render_template('annotate.html', tweets=tweets)
 
 if __name__ == '__main__':
-  app.run(host = "0.0.0.0",debug=True)
+  app.run(host = "0.0.0.0",port = 3000, debug=True)

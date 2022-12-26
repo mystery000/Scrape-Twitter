@@ -90,6 +90,7 @@ $("form[name=form_scrapped").submit(function(e) {
 
   var $form = $(this);
   var $error = $form.find(".error");
+  $error.text("Scraping the Twitter...").removeClass("error--hidden").css('color', 'green')
   var data = $form.serialize();
   $.ajax({
     url: "/dashboard/scrapped",
@@ -97,10 +98,10 @@ $("form[name=form_scrapped").submit(function(e) {
     data: data,
     dataType: "json",
     success: function(resp) {
-      // window.location.href = "/annotate";
+      window.location.href = "/annotate";
     },
     error: function(resp) {
-      $error.text(resp.responseJSON.error).removeClass("error--hidden");
+      $error.text(resp.responseJSON.error).removeClass("error--hidden").css('color', 'red');
     }
   });
 
