@@ -91,7 +91,6 @@ $("form[name=form_scrapped").submit(function(e) {
   var $form = $(this);
   var $error = $form.find(".error");
   var data = $form.serialize();
-  console.log(data);
   $.ajax({
     url: "/dashboard/scrapped",
     type: "GET",

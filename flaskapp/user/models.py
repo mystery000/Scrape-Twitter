@@ -72,7 +72,7 @@ class ScrapeTwitter:
     print(f"Hashtags Used:{ith_tweet[8]}")
   
   # function to perform data extraction
-  def scrapeTwitter(self, words, date_since, numtweet):
+  def scrapeTwitter(self, api, words, date_since, numtweet):
     # Creating DataFrame using pandas
     db = pd.DataFrame(columns=['username',
                             'description',
@@ -170,18 +170,18 @@ class ScrapeTwitter:
     date_since = request.args.get('date')
     numtweet = 30
     try:
-      self.scrapeTwitter(hashtag, date_since, numtweet)
+      self.scrapeTwitter(api, hashtag, date_since, numtweet)
     except:
-      print("Calling the Twitter API has failed.")
-      return jsonify({ "error": "Calling the Twitter API has failed." }), 400
+      print("Calling the Twitter API(tweepy.Cursor) has failed.")
+      return jsonify({ "error": "Calling the Twitter API(tweepy.Cursor) has failed." }), 400
     
     try:
       public_tweets = api.home_timeline()
       tweets = api.user_timeline(screen_name="ahmednasserr__") # law 3ayez ageb tweets beta3t el user da bas
       print(public_tweets)
     except:
-      print("Calling the Twitter API has failed.")
-      return jsonify({ "error": "Calling the Twitter API has failed." }), 400
+      print("Calling the Twitter API(api.home_timeline & api.user_timeline) has failed.")
+      return jsonify({ "error": "Calling the Twitter API(api.home_timeline & api.user_timeline) has failed." }), 400
     
     columns = ['Time', 'User', 'Tweet']
     # Initialize a list
