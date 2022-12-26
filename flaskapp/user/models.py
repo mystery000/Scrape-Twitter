@@ -71,6 +71,7 @@ class ScrapeTwitter:
   
   def twitter_scrapping(self, words, date_since, numtweet):
 
+
     def printtweetdata(n, ith_tweet):
             print()
             print(f"Tweet {n}:")
@@ -86,128 +87,130 @@ class ScrapeTwitter:
 
 
     # function to perform data extraction
-    def scrape(words, date_since, numtweet):
-            print({words, data_since, numtweet})
-            # Creating DataFrame using pandas
-            db = pd.DataFrame(columns=['username',
-                                    'description',
-                                    'location',
-                                    'following',
-                                    'followers',
-                                    'totaltweets',
-                                    'retweetcount',
-                                    'text',
-                                    'hashtags'])
+    def scrapeTwitter(words, date_since, numtweet):
+      # Creating DataFrame using pandas
+      db = pd.DataFrame(columns=['username',
+                              'description',
+                              'location',
+                              'following',
+                              'followers',
+                              'totaltweets',
+                              'retweetcount',
+                              'text',
+                              'hashtags'])
 
-            # We are using .Cursor() to search
-            # through twitter for the required tweets.
-            # The number of tweets can be
-            # restricted using .items(number of tweets)
-            tweets = tweepy.Cursor(api.search_tweets,
-                                words, lang="en",
-                                since_id=date_since,
-                                tweet_mode='extended').items(numtweet)
+      # We are using .Cursor() to search
+      # through twitter for the required tweets.
+      # The number of tweets can be
+      # restricted using .items(number of tweets)
+      tweets = tweepy.Cursor(api.search_tweets,
+                          words, lang="en",
+                          since_id=date_since,
+                          tweet_mode='extended').items(numtweet)
 
 
-            # .Cursor() returns an iterable object. Each item in
-            # the iterator has various attributes
-            # that you can access to
-            # get information about each tweet
-            list_tweets = [tweet for tweet in tweets]
+      # .Cursor() returns an iterable object. Each item in
+      # the iterator has various attributes
+      # that you can access to
+      # get information about each tweet
+      list_tweets = [tweet for tweet in tweets]
 
-            # Counter to maintain Tweet Count
-            i = 1
+      # Counter to maintain Tweet Count
+      i = 1
 
-            # we will iterate over each tweet in the
-            # list for extracting information about each tweet
-            for tweet in list_tweets:
-                    username = tweet.user.screen_name
-                    description = tweet.user.description
-                    location = tweet.user.location
-                    following = tweet.user.friends_count
-                    followers = tweet.user.followers_count
-                    totaltweets = tweet.user.statuses_count
-                    retweetcount = tweet.retweet_count
-                    hashtags = tweet.entities['hashtags']
+      # we will iterate over each tweet in the
+      # list for extracting information about each tweet
+      for tweet in list_tweets:
+              username = tweet.user.screen_name
+              description = tweet.user.description
+              location = tweet.user.location
+              following = tweet.user.friends_count
+              followers = tweet.user.followers_count
+              totaltweets = tweet.user.statuses_count
+              retweetcount = tweet.retweet_count
+              hashtags = tweet.entities['hashtags']
 
-                    # Retweets can be distinguished by
-                    # a retweeted_status attribute,
-                    # in case it is an invalid reference,
-                    # except block will be executed
-                    try:
-                            text = tweet.retweeted_status.full_text
-                    except AttributeError:
-                            text = tweet.full_text
-                    hashtext = list()
-                    for j in range(0, len(hashtags)):
-                            hashtext.append(hashtags[j]['text'])
+              # Retweets can be distinguished by
+              # a retweeted_status attribute,
+              # in case it is an invalid reference,
+              # except block will be executed
+              try:
+                      text = tweet.retweeted_status.full_text
+              except AttributeError:
+                      text = tweet.full_text
+              hashtext = list()
+              for j in range(0, len(hashtags)):
+                      hashtext.append(hashtags[j]['text'])
 
-                    # Here we are appending all the
-                    # extracted information in the DataFrame
-                    ith_tweet = [username, description,
-                                location, following,
-                                followers, totaltweets,
-                                retweetcount, text, hashtext]
-                    db.loc[len(db)] = ith_tweet
+              # Here we are appending all the
+              # extracted information in the DataFrame
+              ith_tweet = [username, description,
+                          location, following,
+                          followers, totaltweets,
+                          retweetcount, text, hashtext]
+              db.loc[len(db)] = ith_tweet
 
-                    # Function call to print tweet data on screen
-                    printtweetdata(i, ith_tweet)
-                    i = i+1
-            filename = 'scraped_tweets.csv'
+              # Function call to print tweet data on screen
+              printtweetdata(i, ith_tweet)
+              i = i+1
+      filename = 'scraped_tweets.csv'
 
-            # we will save our database as a CSV file.
-            db.to_csv(filename)
+      # we will save our database as a CSV file.
+      db.to_csv(filename)
             
 
-    if __name__ == '__main__':
+    def run():
+      # Enter your own credentials obtained
+      # from your developer account
+      consumer_key = "k9yAXXOh2oUoaJ8GWLq6QYzK7"
+      consumer_secret = "7ThFqTMo5trPGGqsnJxz9MPvDtlchzoJmwGD84J6lrA2dHNl3A"
+      access_key = "468641184-JBkHmVXvdsMe18BkiOPd9RQlRcYwLIqHvNceCQVx"
+      access_secret = "6GQHBti29cFPFNywD7RzIVEhDQbFEpgWDaPVeZKwefLkJ"
 
-            # Enter your own credentials obtained
-            # from your developer account
-            consumer_key = "k9yAXXOh2oUoaJ8GWLq6QYzK7"
-            consumer_secret = "7ThFqTMo5trPGGqsnJxz9MPvDtlchzoJmwGD84J6lrA2dHNl3A"
-            access_key = "468641184-JBkHmVXvdsMe18BkiOPd9RQlRcYwLIqHvNceCQVx"
-            access_secret = "6GQHBti29cFPFNywD7RzIVEhDQbFEpgWDaPVeZKwefLkJ"
+      try:
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        auth.set_access_token(access_key, access_secret)
+        api = tweepy.API(auth)
+      except:
+        return jsonify({ "error": "Twitter API calling is failed" }), 400
+      # Enter Hashtag and initial date
+      # print("Enter Twitter HashTag to search for")
+      # words = input()
+      # print("Enter Date since The Tweets are required in yyyy-mm--dd")
+      # date_since = input()
 
-            auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-            auth.set_access_token(access_key, access_secret)
-            api = tweepy.API(auth)
+      # number of tweets you want to extract in one run
+      # numtweet = 50
+      
+      try:
+        scrapeTwitter(words, date_since, numtweet)
+      except:
+        return jsonify({ "error": "Twitter API calling is failed" }), 400
+      
+      try:
+        public_tweets = api.home_timeline()
+        tweets = api.user_timeline(screen_name="ahmednasserr__") # law 3ayez ageb tweets beta3t el user da bas
+        print(public_tweets)
+      except:
+        return jsonify({ "error": "Twitter API calling is failed" }), 400
+      
+      columns = ['Time', 'User', 'Tweet']
+      # Initialize a list
+      data = []
+      # Initialize a counter for the serial number
+      i= 1
+      for tweet in public_tweets:
+          data.append([tweet.created_at, tweet.user.screen_name, tweet.text])
+          print(f"{i}. User: {tweet.user.screen_name}\n Tweet: {tweet.text}")
+          i +=1
+      df = pd.DataFrame(data, columns=columns)
+      #print(df)
 
-            # Enter Hashtag and initial date
-            # print("Enter Twitter HashTag to search for")
-            # words = input()
-            # print("Enter Date since The Tweets are required in yyyy-mm--dd")
-            # date_since = input()
+      df.to_csv('public_tweets.csv')
+      return jsonify({'success': 'Twitter API calling is done successfully!'}), 200
+      
+    run()
 
-            # number of tweets you want to extract in one run
-            # numtweet = 50
-            try:
-              scrape(words, date_since, numtweet)
-              print('Scraping has completed!')
-            except:
-              return jsonify({ "error": "Twitter API calling is failed" }), 400
-            
-            try:
-              public_tweets = api.home_timeline()
-              tweets = api.user_timeline(screen_name="ahmednasserr__") # law 3ayez ageb tweets beta3t el user da bas
-              print(public_tweets)
-            except:
-              return jsonify({ "error": "Twitter API calling is failed" }), 400
-
-            columns = ['Time', 'User', 'Tweet']
-            # Initialize a list
-            data = []
-            # Initialize a counter for the serial number
-            i= 1
-            for tweet in public_tweets:
-                data.append([tweet.created_at, tweet.user.screen_name, tweet.text])
-                print(f"{i}. User: {tweet.user.screen_name}\n Tweet: {tweet.text}")
-                i +=1
-            df = pd.DataFrame(data, columns=columns)
-            #print(df)
-
-            df.to_csv('public_tweets.csv')
-            return jsonify({'success': 'Twitter API calling is done successfully!'}), 200
-    
     return jsonify({'success': 'Twitter API calling is done successfully!'}), 200
 
 
