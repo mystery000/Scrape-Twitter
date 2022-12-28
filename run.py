@@ -1,6 +1,7 @@
-from flask import render_template
+from flask import render_template, redirect, url_for
 from flaskapp import app, login_required
 from flaskapp.user.routes import *
+from werkzeug.utils import secure_filename
 import pandas as pd
 import json
 
@@ -53,9 +54,32 @@ def search_page():
 
 @app.route('/annotate')
 def annotate_page():
-  data = pd.read_csv('scraped_tweets.csv')
+  try:
+    data = pd.read_csv('scraped_tweets.csv')
+  except:
+    return redirect(url_for('dashboard'))
   tweets:list = data.to_dict('list')
   return render_template('annotate.html', tweets=tweets)
+
+
+@app.route('/annotate/upload', methods = ['POST','GET'])
+def annotate_upload():
+  if request.method == 'POST':
+    tweets: list = []
+    upload_file = request.files['upload_file']
+
+    if upload_file.filename != '':
+      upload_file.save(secure_filename('uploaded_tweets.csv'))
+      
+      try:
+        data = pd.read_csv('uploaded_tweets.csv')
+        print(data)
+        tweets = data.to_dict('list')
+      except:
+        return redirect(url_for('dashboard'))
+
+    return render_template('annotate.html', tweets=tweets)
+  
 
 if __name__ == '__main__':
   app.run(host = "0.0.0.0",port = 3000, debug=True)
