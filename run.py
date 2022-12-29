@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
 from flaskapp import app, login_required
 from flaskapp.user.routes import *
 from werkzeug.utils import secure_filename
@@ -56,6 +56,7 @@ def search_page():
 def annotate_page():
   try:
     data = pd.read_csv('scraped_tweets.csv')
+    data.rename( columns={'Unnamed: 0':'ID'}, inplace=True ) 
   except:
     return redirect(url_for('dashboard'))
   tweets:list = data.to_dict('list')
@@ -73,10 +74,10 @@ def annotate_upload():
       
       try:
         data = pd.read_csv('uploaded_tweets.csv')
-        print(data)
+        data.rename( columns={'Unnamed: 0':'ID'}, inplace=True )     
         tweets = data.to_dict('list')
       except:
-        return redirect(url_for('dashboard'))
+        return render_template('annotate.html', error='Unsupported file format! Try again.')
 
     return render_template('annotate.html', tweets=tweets)
   
