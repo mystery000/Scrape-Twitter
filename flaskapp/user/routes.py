@@ -1,6 +1,7 @@
 from flaskapp import app
 from flaskapp.user.models import User,ScrapeTwitter
-from flask import request
+
+
 @app.route('/user/signup', methods=['POST','GET'])
 def signup():
   return User().signup()
@@ -12,10 +13,11 @@ def signout():
 @app.route('/user/login', methods=['POST','GET'])
 def login():
   return User().login()
-  
 @app.route('/dashboard/scrapped', methods=['GET'])
 def scrape():
   return ScrapeTwitter().scrape()
+
+  
 
 # @app.route('/user/login', methods=['POST','GET'])
 # def scrape():

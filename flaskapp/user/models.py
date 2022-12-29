@@ -55,9 +55,8 @@ class User:
     
     return jsonify({ "error": "Invalid login credentials" }), 401
 
-
 class ScrapeTwitter:
-
+    
   def printtweetdata(self, n, ith_tweet):
     print()
     print(f"Tweet {n}:")
@@ -168,7 +167,7 @@ class ScrapeTwitter:
     # numtweet = 50
     hashtag = request.args.get('hashtag')
     date_since = request.args.get('date')
-    numtweet = 30
+    numtweet = 90
     try:
       self.scrapeTwitter(api, hashtag, date_since, numtweet)
     except:
@@ -197,3 +196,7 @@ class ScrapeTwitter:
 
     df.to_csv('public_tweets.csv')
     return jsonify({'success': 'Twitter API calling is done successfully!'}), 200   
+
+      
+
+
