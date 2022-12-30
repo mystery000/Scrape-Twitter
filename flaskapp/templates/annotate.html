@@ -88,6 +88,7 @@
 </html>
 <script src="/static/js/jquery.js"></script>
 <script>
+  var marks = [];
   $('.form-control').change(() => {
     $('.table-upload-error').html("<span style='color: green'>Please upload this file</span>");
     if($('.table-upload-error').length == 0) {
@@ -101,11 +102,12 @@
         span.classList.add('marked-text');
         // span.style.cssText = "background-color: #d69869;";
     span.appendChild(range.extractContents());
-   
-      $('.modal').show();
-
-    
+    annotation = document.createElement('span');
+    annotation.textContent = '';
+    marks.push(annotation);
+    span.append(annotation);
     range.insertNode(span);
+    $('.modal').show();
   });
 
   $('.modal .btn-close').click(() => {   
@@ -115,14 +117,11 @@
   
   $('.modal .btn-save').click(() => {
     selectedText = $('input[name="flexRadioButton"]:checked').val();
-
-    annotation = document.createElement('span');
-    annotation.textContent = selectedText;
-    annotation.style.cssText = "border: 1px solid red; border-radius: 5px; background-color: white;";
-    
-    $('.marked-text').last().append(annotation);
+    marks.at(-1).textContent = selectedText;
+    marks.at(-1).style.cssText = 'border: 1px solid green; border-radius: 5px; background-color: white;';
     $('.marked-text').css({'background-color': '#d69869'});
     $('.modal').hide();
+    $(document).click();
   });
 
 </script>
