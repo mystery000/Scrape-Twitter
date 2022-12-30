@@ -40,7 +40,7 @@
             {% for id in tweets['ID'] %}
               <tr style="border-bottom: 1px solid green">
                 {% for item in tweets.keys() %}
-                  <td>{{tweets[item][id]}}</td>
+                  <td><span class="annotation-text">{{tweets[item][id]}}</span></td>
                 {% endfor %}
               </tr>
             {% endfor %}
@@ -59,6 +59,31 @@
         </table>
       </div>
     </div>
+    <!-- Choose Select label modal -->
+    <div class="modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header justify-content-center">
+            <h5 class="modal-title">Choose a label</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            {% with labels=['PER','LOC','ORG','NAME','MED'] %}
+              {% for label in labels %}
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioButton"/>
+                  <label class="form-check-label" for="flexRadioButton"> {{ label }} </label>
+                </div>
+              {% endfor %}
+            {% endwith %}
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-dark btn-save">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end modal -->
   </body>
 </html>
 <script src="/static/js/jquery.js"></script>
@@ -68,5 +93,33 @@
     if($('.table-upload-error').length == 0) {
       $('.form-upload-error').html("<span style='color: green;'>Please upload this file</span>");
     }
+  });
+
+  $('.annotation-text').dblclick((e) => {
+    var range = window.getSelection().getRangeAt(0),
+        span = document.createElement('span');
+        span.classList.add('marked-text');
+        // span.style.cssText = "background-color: #d69869;";
+    span.appendChild(range.extractContents());
+
+    $('.modal').show();
+    // annotation = document.createElement('span');
+    // annotation.textContent = 'Annotation1';
+    // annotation.style.cssText = "border: 1px solid red; border-radius: 5px; background-color: white;";
+    // span.appendChild(annotation);
+
+    range.insertNode(span);
+  });
+
+  $('.modal .btn-close').click(() => {   
+    $('.marked-text').css({'background-color': ''});
+    $('.modal').hide();
+  });
+  
+  $('.modal .btn-save').click(() => {
+    text = $('.modal input[name="flexRadioButton"]:checked').value;
+    console.log(text)
+    $('.marked-text').css({'background-color': '#d69869'});
+    $('.modal').hide();
   });
 </script>
