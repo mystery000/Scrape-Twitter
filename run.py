@@ -65,13 +65,21 @@ def search_page():
 
 @app.route('/annotate')
 def annotate_page():
+  labels = []
+  try:
+    for label in db.labels.find({},{'_id': 0, 'label': 1}):
+      labels.append(label['label'])
+  except:
+    return jsonify({'error': 'DB error!'}), 400
+
   try:
     data = pd.read_csv('scraped_tweets.csv')
     data.rename( columns={'Unnamed: 0':'ID'}, inplace=True ) 
   except:
     return redirect(url_for('dashboard'))
+
   tweets:list = data.to_dict('list')
-  return render_template('annotate.html', tweets=tweets)
+  return render_template('annotate.html', tweets=tweets, labels = labels)
 
 
 @app.route('/annotate/upload', methods = ['POST','GET'])

@@ -68,14 +68,14 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            {% with labels=['PER','LOC','ORG','NAME','MED'] %}
-              {% for label in labels %}
-              <div>        
-                  <input class="form-check-input" type="radio" name="flexRadioButton" id="flexRadioButton{{loop.index}}" value="{{ label }}" {% if loop.index == 1 %}checked{% endif %}/>
-                  <label class="form-check-label" for="flexRadioButton"> {{ label }} </label>
-              </div>
-              {% endfor %}
-            {% endwith %}
+            
+            {% for label in labels %}
+            <div>        
+                <input class="form-check-input" type="radio" name="flexRadioButton" id="flexRadioButton{{loop.index}}" value="{{ label }}" {% if loop.index == 1 %}checked{% endif %}/>
+                <label class="form-check-label" for="flexRadioButton"> {{ label }} </label>
+            </div>
+            {% endfor %}
+            
           </div>
           <div class="modal-footer justify-content-center">
             <button type="button" class="btn btn-dark btn-save">Save</button>
