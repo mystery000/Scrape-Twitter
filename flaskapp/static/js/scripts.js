@@ -42,7 +42,6 @@ $("form[name=detail_form").submit(function(e) {
 });
 
 $("form[name=login_form").submit(function(e) {
-
   var $form = $(this);
   var $error = $form.find(".error");
   var data = $form.serialize();
@@ -87,7 +86,6 @@ $("form[name=scrape").submit(function(e) {
 
 
 $("form[name=form_scrapped").submit(function(e) {
-
   var $form = $(this);
   var $error = $form.find(".error");
   $error.text("Scraping the Twitter...").removeClass("error--hidden").css('color', 'green')
@@ -107,3 +105,4 @@ $("form[name=form_scrapped").submit(function(e) {
 
   e.preventDefault();
 });
+

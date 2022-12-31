@@ -1,10 +1,10 @@
-from flask import render_template, redirect, url_for, request
-from flaskapp import app, login_required
+from flask import render_template, redirect, url_for, request, jsonify
+from flaskapp import app, login_required, db
 from flaskapp.user.routes import *
 from werkzeug.utils import secure_filename
 import pandas as pd
 import json
-
+import uuid
 # for annotation
 import urllib.request
 from inscriptis import get_annotated_text, ParserConfig
@@ -20,7 +20,18 @@ def login_page():
 
 @app.route('/profile')
 def profile():
-  return render_template('profile.html')
+  labels = []
+  try:
+    for label in db.labels.find({},{'_id': 0, 'label': 1}):
+      labels.append(label['label'])
+  except:
+    return jsonify({'error': 'DB error!'}), 400
+
+  return render_template('profile.html', labels=labels)
+
+@app.route('/profile/addLabel')
+def add_label():
+  return render_template('add-label.html')
 
 @app.route('/dashboard')
 @login_required
@@ -81,6 +92,17 @@ def annotate_upload():
 
     return render_template('annotate.html', tweets=tweets)
   
+
+@app.route('/profile/saveNewLabel')
+def save_new_label():
+  label = request.args.get('label')
+  if db.labels.find_one({"label": label}):
+    return jsonify({ "error": "The label already in use" }), 400
+
+  if db.labels.insert_one({ "_id": uuid.uuid4().hex, "label": label}):
+    return jsonify({'success': 'A label is saved successfully!'}), 200 
+
+  return jsonify({ "error": "Adding a new label is failed" }), 400
 
 if __name__ == '__main__':
   app.run(host = "0.0.0.0",port = 3000, debug=True)

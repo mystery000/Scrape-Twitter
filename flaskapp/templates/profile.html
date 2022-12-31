@@ -33,14 +33,25 @@
       </form>
       
     </div> -->
-    <div style="border-radius: 20px; background-color:beige; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <div style="font-size: 0.8rem;">My labels</div>
-        <div style="font-weight: bold;">PER,LOC,ORG,NAME,MED</div>
+    <div style="border-radius: 20px; background-color:beige; padding: 10px 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 0.8rem;">My labels</div>
+            <div style="font-weight: bold;">
+              {% if labels %}
+                {% for label in labels %}
+                  <span>{{ label }},</span>
+                {% endfor %}
+              {% else %}
+                <span style="color: red">No label</span>
+              {% endif %}
+            </div>
+          </div>
+          <div>
+            <span style="color: green" onclick="window.location.href='/profile/addLabel'">Update</span>
+        </div>  
       </div>
-      <div>
-        <span style="color: green" onclick="">Update</span>
-      </div>  
     </div>
-  </div>
+</div>
+
 {% endblock %}

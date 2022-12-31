@@ -1,7 +1,6 @@
 from flaskapp import app
 from flaskapp.user.models import User,ScrapeTwitter
 
-
 @app.route('/user/signup', methods=['POST','GET'])
 def signup():
   return User().signup()
